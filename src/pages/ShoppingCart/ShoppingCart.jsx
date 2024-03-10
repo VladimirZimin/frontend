@@ -69,7 +69,13 @@ const ShoppingCart = () => {
   };
 
   const handleRemoveItem = (productId) => {
-    setCartItems(cartItems.filter((item) => item.id !== productId));
+    const updatedCartItems = cartItems.filter((item) => item.id !== productId);
+    setCartItems(updatedCartItems);
+    const newTotal = updatedCartItems.reduce(
+      (acc, item) => acc + item.price * (item.quantity || 1),
+      0
+    );
+    setTotal(newTotal);
   };
 
   const handleSubmit = async (e) => {
