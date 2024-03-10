@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdStarBorder } from "react-icons/md";
 import { MdStar } from "react-icons/md";
 
@@ -6,6 +6,17 @@ import api from "../../api/apiShop";
 
 const MedicineList = ({ selectedShop }) => {
   const [selectedMedicine, setSelectedMedicine] = useState("");
+  const [shop, setShop] = useState({
+    _id: selectedShop._id,
+    name: selectedShop.name,
+    medicines: selectedShop.medicines,
+  });
+
+  useEffect(() => {
+    if (selectedShop._id !== shop._id) {
+      setShop(selectedShop);
+    }
+  }, [selectedShop, selectedShop._id, shop._id]);
 
   const handleClickAddToCart = (medicine) => {
     if (!medicine) {
@@ -36,15 +47,15 @@ const MedicineList = ({ selectedShop }) => {
     setSelectedMedicine(sort);
 
     if (sort === "name") {
-      selectedShop.medicines.sort((a, b) => a.name.localeCompare(b.name));
+      shop.medicines.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     if (sort === "price") {
-      selectedShop.medicines.sort((a, b) => a.price - b.price);
+      shop.medicines.sort((a, b) => a.price - b.price);
     }
 
     if (sort === "favorite") {
-      selectedShop.medicines.sort((a, b) => b.favorite - a.favorite);
+      shop.medicines.sort((a, b) => b.favorite - a.favorite);
     }
   };
 
@@ -61,9 +72,9 @@ const MedicineList = ({ selectedShop }) => {
   };
 
   const handleClickAddToFavorite = async (medicineId) => {
-    const shopId = selectedShop?._id;
+    const shopId = shop?._id;
 
-    const currentFavorite = selectedShop?.medicines.find(
+    const currentFavorite = shop?.medicines.find(
       (medicine) => medicine.id === medicineId
     );
 
@@ -79,18 +90,26 @@ const MedicineList = ({ selectedShop }) => {
           favorite: true,
         });
       }
+
+      const updatedMedicines = shop.medicines.map((medicine) => {
+        if (medicine.id === medicineId) {
+          return { ...medicine, favorite: !medicine.favorite };
+        }
+        return medicine;
+      });
+      setShop({ ...shop, medicines: updatedMedicines });
     } catch (error) {
       console.error("Error updating favorite:", error);
     }
   };
 
-  if (!selectedShop) {
+  if (!shop) {
     return null;
   }
   return (
     <div className="w-3/4 my-5">
       <div className="mb-5 flex justify-between">
-        <h1 className="text-2xl font-bold mb-4">{selectedShop.name}</h1>
+        <h1 className="text-2xl font-bold mb-4">{shop.name}</h1>
         <select
           className="w-1/4"
           name="sort"
@@ -105,8 +124,8 @@ const MedicineList = ({ selectedShop }) => {
         </select>
       </div>
       <ul className="w-full flex flex-wrap gap-4">
-        {selectedShop.name &&
-          selectedShop.medicines.map((medicine) => {
+        {shop.name &&
+          shop.medicines.map((medicine) => {
             return (
               <li
                 className="bg-white shadow-md rounded-lg p-4 w-1/4 flex flex-col justify-between"
