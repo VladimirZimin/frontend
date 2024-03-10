@@ -7,16 +7,16 @@ import api from "../../api/apiShop";
 const MedicineList = ({ selectedShop }) => {
   const [selectedMedicine, setSelectedMedicine] = useState("");
   const [shop, setShop] = useState({
-    _id: selectedShop._id,
-    name: selectedShop.name,
-    medicines: selectedShop.medicines,
+    _id: selectedShop?._id,
+    name: selectedShop?.name,
+    medicines: selectedShop?.medicines,
   });
 
   useEffect(() => {
-    if (selectedShop._id !== shop._id) {
+    if (selectedShop?.name !== shop.name) {
       setShop(selectedShop);
     }
-  }, [selectedShop, selectedShop._id, shop._id]);
+  }, [selectedShop, selectedShop?.name, shop.name]);
 
   const handleClickAddToCart = (medicine) => {
     if (!medicine) {
