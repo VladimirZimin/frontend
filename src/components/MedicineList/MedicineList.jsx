@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MdStarBorder } from "react-icons/md";
 import { MdStar } from "react-icons/md";
 
 import api from "../../api/apiShop";
 
 const MedicineList = ({ selectedShop }) => {
-  const [selectedMedicine, setSelectedMedicine] = useState("");
+  const [selectedMedicine, setSelectedMedicine] = useState("favorite");
   const [shop, setShop] = useState({
     _id: selectedShop?._id,
     name: selectedShop?.name,
@@ -17,6 +17,15 @@ const MedicineList = ({ selectedShop }) => {
       setShop(selectedShop);
     }
   }, [selectedShop, selectedShop?.name, shop.name]);
+
+  useEffect(() => {
+    if (shop.medicines) {
+      setShop({
+        ...shop,
+        medicines: shop.medicines.sort((a, b) => b.favorite - a.favorite),
+      });
+    }
+  }, [shop.medicines]);
 
   const handleClickAddToCart = (medicine) => {
     if (!medicine) {
@@ -43,21 +52,26 @@ const MedicineList = ({ selectedShop }) => {
     localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
   };
 
-  const handleSort = (sort) => {
-    setSelectedMedicine(sort);
+  const handleSort = useCallback(
+    (sort) => {
+      setSelectedMedicine(sort);
 
-    if (sort === "name") {
-      shop.medicines.sort((a, b) => a.name.localeCompare(b.name));
-    }
+      if (sort === "name") {
+        shop.medicines.sort((a, b) => a.name.localeCompare(b.name));
+      }
 
-    if (sort === "price") {
-      shop.medicines.sort((a, b) => a.price - b.price);
-    }
+      if (sort === "price") {
+        shop.medicines.sort((a, b) => a.price - b.price);
+      }
 
-    if (sort === "favorite") {
-      shop.medicines.sort((a, b) => b.favorite - a.favorite);
-    }
-  };
+      if (sort === "favorite") {
+        console.log("sort");
+
+        shop.medicines.sort((a, b) => b.favorite - a.favorite);
+      }
+    },
+    [shop.medicines]
+  );
 
   const handleAddToCart = (event) => {
     const target = event.currentTarget;
