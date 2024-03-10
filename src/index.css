@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+.footer {
+  display: flex;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 15px 0;
+  font-size: 18px;
+  font-weight: 500;
+}

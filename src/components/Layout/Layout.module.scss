@@ -1,0 +1,24 @@
+
+
+.list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.item {
+  margin-right: 30px;
+  padding: 15px 25px;
+  font-size: 18px;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+
+  &:hover {
+    border-bottom: 2px solid #000;
+  }
+}
+
+.active {
+  color: orange;
+}
